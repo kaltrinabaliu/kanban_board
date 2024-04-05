@@ -1,0 +1,37 @@
+.single-task {
+    width: 100%;
+    padding: 2rem;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    background-color: #f0ede4;
+    transition: all 0.3s ease-in-out;
+}
+
+.single-task:last-child {
+    margin-bottom: 0;
+}
+
+.task-title {
+    font-size: 1.3rem;
+    color: #282c34;
+}
+
+.task-desc {
+    margin-top: 1rem;
+    font-size: 1rem;
+    color: #282c34
+}
+
+.current {
+    background-color: #7e7e84; 
+    opacity: 1; 
+}
+.current .task-desc{
+    color: #7e7e84; 
+}
+
+.current .task-title {
+    color: #7e7e84; 
+
+}
