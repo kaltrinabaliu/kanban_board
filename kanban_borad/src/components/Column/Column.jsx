@@ -37,10 +37,10 @@ const Column = ({ status, tasks, tableIndex, dragging, handleDragEnter, handleDr
       tableTitleColor = 'red';
       break;
     case 'IN PROGRESS':
-      tableTitleColor = 'green';
+      tableTitleColor = '#9f950a';
       break;
     case 'DONE':
-      tableTitleColor = 'yellow';
+      tableTitleColor = 'green';
       break;
     case 'FINAL':
       tableTitleColor = 'blue';
@@ -62,11 +62,12 @@ const Column = ({ status, tasks, tableIndex, dragging, handleDragEnter, handleDr
       : undefined
     }
   >
-      <div
+       <div
         className="table-title"
-        style={{ backgroundColor: tableTitleColor }}
+        style={{ backgroundColor: tableTitleColor, display:"flex"}}
       >
-        <h2>{status}</h2>
+        <h2 style={{margin:20}}>{status}</h2>
+        <h2 className="tasks-length">[{tasks.length}]</h2>
       </div>
       <div className='table-content' >
         {tasks.slice(0, getDisplayedTasksCount()).map((task, taskIndex) => (
