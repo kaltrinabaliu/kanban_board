@@ -13,41 +13,33 @@ const Column = ({ status, tasks, tableIndex, dragging, handleDragEnter, handleDr
     }));
   };
 
-const handleDragOver = (event) => {
-  event.preventDefault();
-  setIsDraggingOver(true);
-
-  const target = event.target;
-
-  // Check if target exists
-  if (target) {
-    const rect = target.getBoundingClientRect();
-    const offset = (event.clientY - rect.top) / rect.height;
-
-    // Determine if the mouse is near the bottom of the column
-    const nearBottom = offset > 0.8; // Adjust this value as needed
-
-    // If near the bottom and there are tasks, insert after the last task
-    if (nearBottom && tasks.length > 0) {
-      const lastTaskIndex = tasks.length;
-      const lastTaskElement = target.childNodes[lastTaskIndex];
-      
-      // Check if lastTaskElement exists
-      if (lastTaskElement) {
-        const lastTaskRect = lastTaskElement.getBoundingClientRect();
-        if (event.clientY > lastTaskRect.bottom) {
-          // Call handleDragEnter with taskIndex incremented by 1 to insert after the last task
-          handleDragEnter(event, { tableIndex, taskIndex: lastTaskIndex-1});
-          return;
-        }
+  const handleDragOver = (event) => {
+    event.preventDefault();
+    setIsDraggingOver(true);
+    const target = event.target;
+  
+    // Check if target exists
+    if (target && !target.classList.contains("table-content") && isDraggingOver && dragging) {
+      const rect = target.getBoundingClientRect();
+      // Determine if the mouse is near the bottom of the column
+      const nearBottom = event.clientY >= rect.height / 2; // Adjust this value as needed
+  
+      let taskIndex;
+      if (nearBottom) {
+        // If near the bottom and there are tasks, insert after the last task
+        taskIndex = tasks.length - 1;
+      } else {
+        // Calculate the index based on mouse position within the column
+        const mouseY = event.clientY - rect.top;
+        const taskHeight = rect.height / tasks.length;
+        taskIndex = Math.floor(mouseY / taskHeight);
       }
+  
+      // Call handleDragEnter with calculated taskIndex to insert the task at the appropriate position
+      handleDragEnter(event, { tableIndex, taskIndex });
     }
-  }
-
-  // Otherwise, handle as usual (insert at the position determined by handleDragEnter)
-  handleDragEnter(event, { tableIndex, taskIndex: 0 });
-};
-
+  };
+  
 
   function handleDragLeave(event) {
     const relatedTarget = event.relatedTarget;
@@ -105,8 +97,8 @@ const handleDragOver = (event) => {
         <h2 className="tasks-length">[{tasks.length}]</h2>
       </div>
       <div className='table-content' >
-      {tasks && tasks.slice(0, getDisplayedTasksCount()).map((task, taskIndex) => (
-          task && task.id && ( // Add null check for task and id
+      {tasks.slice(0, getDisplayedTasksCount()).map((task, taskIndex) => (
+           // Add null check for task and id
             <TaskComponent
               key={task.id}
               task={task}
@@ -117,7 +109,6 @@ const handleDragOver = (event) => {
               handleDragEnter={handleDragEnter}
               getStyles={getStyles}
             />
-          )
         ))}
         {getDisplayedTasksCount() < tasks.length && (
           <button
