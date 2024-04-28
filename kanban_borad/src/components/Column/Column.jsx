@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import TaskComponent from '../Task/Task';
 import './Column.css';
 
-const Column = ({ status, tasks, tableIndex, dragging, handleDragEnter, handleDragStart, getStyles }) => {
+const Column = ({ status, tasks, tableIndex, dragging, handleDragEnter, handleDragStart, getStyles, draggedTask }) => {
   const [displayedTasks, setDisplayedTasks] = useState({});
   const [isDraggingOver, setIsDraggingOver] = useState(false);
 
@@ -21,24 +21,27 @@ const Column = ({ status, tasks, tableIndex, dragging, handleDragEnter, handleDr
     // Check if target exists
     if (target && !target.classList.contains("table-content") && isDraggingOver && dragging) {
       const rect = target.getBoundingClientRect();
-      // Determine if the mouse is near the bottom of the column
-      const nearBottom = event.clientY >= rect.height / 2; // Adjust this value as needed
-  
-      let taskIndex;
-      if (nearBottom) {
-        // If near the bottom and there are tasks, insert after the last task
-        taskIndex = tasks.length - 1;
-      } else {
-        // Calculate the index based on mouse position within the column
-        const mouseY = event.clientY - rect.top;
-        const taskHeight = rect.height / tasks.length;
-        taskIndex = Math.floor(mouseY / taskHeight);
+     
+      const distanceFromTop = event.clientY - rect.top;
+      const bottomMargin = rect.height * 0.6; // Define a margin from the bottom
+   console.log(bottomMargin);
+      if (distanceFromTop >= rect.height - bottomMargin) {
+        // If the mouse is near the bottom margin
+        const lastTask = target.querySelector('.single-task:last-child');
+        if (lastTask) {
+          const taskRect = lastTask.getBoundingClientRect();
+          const taskBottom = taskRect.bottom - rect.top; // Adjust to get relative to column top
+          const nearBottom = event.clientY >= taskBottom;
+          if (nearBottom) {
+            // Insert after the last task
+            handleDragEnter(event, { tableIndex: tableIndex, taskIndex: tasks.length - 1 });
+            return;
+          }
+        }
       }
-  
-      // Call handleDragEnter with calculated taskIndex to insert the task at the appropriate position
-      handleDragEnter(event, { tableIndex, taskIndex });
     }
   };
+  
   
 
   function handleDragLeave(event) {

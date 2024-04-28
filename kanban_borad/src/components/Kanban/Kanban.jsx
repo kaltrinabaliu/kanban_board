@@ -79,6 +79,7 @@ const Kanban = ({ data }) => {
               dragging={dragging}
               handleDragEnter={handleDragEnter}
               handleDragStart={handleDragStart}
+              draggedTask={dragItem.current}
               getStyles={getStyles}
             />
           ))}
