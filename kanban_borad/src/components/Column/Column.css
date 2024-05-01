@@ -39,3 +39,10 @@
     height: 800px;
     
   }
+  .tasks-length{
+    margin-top: 20px;
+      }
+      .drop-target {
+        border-bottom: 5px dashed gray;
+      }
+      

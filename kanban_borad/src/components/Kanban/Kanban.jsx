@@ -26,24 +26,12 @@ const Kanban = ({ data }) => {
     const currentItem = dragItem.current;
     const draggedTask = dataLists[currentItem.tableIndex].tasks[currentItem.taskIndex];
 
+
     if (event.target !== dragNode.current) {
-      const targetRect = event.target.getBoundingClientRect();
-      const offsetY = event.clientY - targetRect.top;
-      const isNearBottom = offsetY > targetRect.height / 2; // Check if drag is near bottom of the column
-
-      if (isNearBottom) {
         if (dataLists[task.tableIndex].status === StatusEnum.FINAL && draggedTask.id % 2 === 0) {
-          return;
+          return; 
         }
-
-        setDataLists((oldList) => {
-          const newList = JSON.parse(JSON.stringify(oldList));
-          const removedTask = newList[currentItem.tableIndex].tasks.splice(currentItem.taskIndex, 1)[0];
-          newList[task.tableIndex].tasks.push(removedTask); // Push to the end of tasks in the target column
-          dragItem.current = { ...currentItem, tableIndex: task.tableIndex, taskIndex: newList[task.tableIndex].tasks.length - 1 }; // Update task index
-          return newList;
-        });
-      } else {
+      
         // Handle dragging within the column as before
         setDataLists((oldList) => {
           const newList = JSON.parse(JSON.stringify(oldList));
@@ -52,9 +40,9 @@ const Kanban = ({ data }) => {
           dragItem.current = { ...currentItem, tableIndex: task.tableIndex, taskIndex: task.taskIndex };
           return newList;
         });
-      }
     }
   };
+  
 
   const handleDragEnd = () => {
     setDragging(false);
@@ -91,6 +79,7 @@ const Kanban = ({ data }) => {
               dragging={dragging}
               handleDragEnter={handleDragEnter}
               handleDragStart={handleDragStart}
+              draggedTask={dragItem.current}
               getStyles={getStyles}
             />
           ))}
